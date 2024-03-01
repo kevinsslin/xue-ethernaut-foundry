@@ -5,6 +5,10 @@ import {Script, console2} from "forge-std/Script.sol";
 import {EthernautHelper} from "../setup/EthernautHelper.sol";
 
 // NOTE You can import your helper contracts & create interfaces here
+interface IFallout {
+    function Fal1out() external payable;
+    function owner() external view returns (address);
+}
 
 contract FalloutSolution is Script, EthernautHelper {
     address constant LEVEL_ADDRESS = 0x676e57FdBbd8e5fE1A7A3f4Bb1296dAC880aa639;
@@ -16,7 +20,9 @@ contract FalloutSolution is Script, EthernautHelper {
         address challengeInstance = createInstance(LEVEL_ADDRESS);
 
         // YOUR SOLUTION HERE
-
+        IFallout fallout = IFallout(challengeInstance);
+        fallout.Fal1out{value: 0.001 ether}();
+        console2.log("New Owner is: ", fallout.owner());
 
 
         // SUBMIT CHALLENGE. (DON'T EDIT)
